@@ -6,8 +6,8 @@ import (
 )
 
 type SessionManager struct {
-	session  *mgo.Session
-	database *mgo.Database
+	Session  *mgo.Session
+	Database *mgo.Database
 }
 
 var (
@@ -20,12 +20,12 @@ func Connect() {
 		log.Fatal(err)
 	}
 
-	Manager.session = session
-	Manager.session.SetMode(mgo.Monotonic, true)
+	Manager.Session = session
+	Manager.Session.SetMode(mgo.Monotonic, true)
 
-	Manager.database = Manager.session.DB("miguel")
+	Manager.Database = Manager.Session.DB("miguel")
 }
 
 func Disconnect() {
-	Manager.session.Close()
+	Manager.Session.Close()
 }

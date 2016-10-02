@@ -1,7 +1,7 @@
-package projectModel
+package buildModel
 
 import (
-	"labix/v2/mgo/bson"
+	"gopkg.in/mgo.v2/bson"
 )
 
 type Build struct {
