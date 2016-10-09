@@ -7,8 +7,8 @@ import (
 
 type (
 	CredentialSet struct {
-		user string `bson:"name"`
-		key  string `bson:"key"`
+		User string `bson:"name"`
+		Key  string `bson:"key"`
 	}
 
 	Project struct {
