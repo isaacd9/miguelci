@@ -1,12 +1,12 @@
 package routes
 
 import (
+	"log"
+
 	"github.com/isaacd9/miguel/lib/project"
 	"github.com/isaacd9/miguel/model/error"
 	"github.com/isaacd9/miguel/model/project"
 	"github.com/kataras/iris"
-	"gopkg.in/mgo.v2/bson"
-	"log"
 )
 
 func parseProject(ctx *iris.Context) (p *projectModel.Project) {
@@ -31,6 +31,21 @@ func ListProjects(ctx *iris.Context) {
 	return
 }
 
+func GetProjectInfo(ctx *iris.Context) {
+	id := ctx.Param("id")
+	pp, err := project.FindProject(id)
+
+	if err != nil {
+		log.Print("Error finding project " + id + ": " + err.Error())
+		ctx.JSON(404, errorModel.Error{
+			Message: err.Error(),
+		})
+		return
+	}
+
+	ctx.JSON(iris.StatusOK, pp)
+}
+
 func AddProject(ctx *iris.Context) {
 	p := parseProject(ctx)
 
@@ -40,6 +55,7 @@ func AddProject(ctx *iris.Context) {
 		ctx.JSON(401, errorModel.Error{
 			Message: err.Error(),
 		})
+		return
 	}
 	ctx.JSON(iris.StatusOK, map[string]string{
 		"message": "success",
@@ -47,15 +63,15 @@ func AddProject(ctx *iris.Context) {
 }
 
 func RemoveProject(ctx *iris.Context) {
-	id := bson.ObjectId(ctx.Param("id"))
-	p := projectModel.Project{ID: id}
+	id := ctx.Param("id")
+	err := project.Delete(id)
 
-	err := project.Delete(&p)
 	if err != nil {
 		log.Print("Error deleting project: " + err.Error())
 		ctx.JSON(401, errorModel.Error{
 			Message: err.Error(),
 		})
+		return
 	}
 	ctx.JSON(iris.StatusOK, map[string]string{
 		"message": "success",

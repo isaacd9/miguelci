@@ -2,9 +2,11 @@ package project
 
 import (
 	"errors"
+
 	"github.com/isaacd9/miguel/lib/database"
+	"github.com/isaacd9/miguel/model/build"
 	"github.com/isaacd9/miguel/model/project"
-	"log"
+	"gopkg.in/mgo.v2/bson"
 )
 
 func ListProjects() (project []*projectModel.Project, err error) {
@@ -13,6 +15,10 @@ func ListProjects() (project []*projectModel.Project, err error) {
 	c.Find(nil).Limit(100).All(&project)
 	if err != nil {
 		return nil, err
+	}
+
+	if project == nil {
+		return make([]*projectModel.Project, 0), nil
 	}
 
 	return
@@ -31,21 +37,42 @@ func New(p *projectModel.Project) (err error) {
 
 	err = c.Insert(p)
 	if err != nil {
-		log.Print(err)
 		return err
 	}
 
 	return nil
 }
 
-func Delete(p *projectModel.Project) (err error) {
+func Delete(id string) (err error) {
 	c := database.Manager.Database.C("projects")
-
-	err = c.Remove(p)
+	err = c.Remove(bson.M{"_id": bson.ObjectIdHex(id)})
 
 	if err != nil {
 		return err
 	}
 
 	return
+}
+
+func ListBuilds(id string) (builds *[]buildModel.Build, err error) {
+	c := database.Manager.Database.C("projects")
+	p := projectModel.Project{}
+	err = c.Find(bson.M{"_id": bson.ObjectIdHex(id)}).One(&p)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &p.Builds, err
+}
+
+func FindProject(id string) (pp *projectModel.Project, err error) {
+	c := database.Manager.Database.C("projects")
+	err = c.Find(bson.M{"_id": bson.ObjectIdHex(id)}).One(&pp)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return pp, nil
 }
