@@ -1,7 +1,6 @@
 package projectModel
 
 import (
-	"github.com/isaacd9/miguel/model/build"
 	"gopkg.in/mgo.v2/bson"
 )
 
@@ -12,10 +11,10 @@ type (
 	}
 
 	Project struct {
-		ID     bson.ObjectId      `bson:"_id,omitempty"`
-		Name   string             `bson:"name"`
-		URL    string             `bson:"URL"`
-		Auth   CredentialSet      `bson:"credentials"`
-		Builds []buildModel.Build `bson:"builds"`
+		ID     bson.ObjectId `bson:"_id,omitempty"`
+		Name   string        `bson:"name"`
+		URL    string        `bson:"URL"`
+		Auth   CredentialSet `bson:"credentials"`
+		Builds []Build       `bson:"builds"`
 	}
 )

@@ -24,7 +24,7 @@ func ListBuilds(ctx *iris.Context) {
 
 func StartBuild(ctx *iris.Context) {
 	id := ctx.Param("id")
-	err := project.StartBuild(id)
+	err := project.NewBuild(id)
 
 	if err != nil {
 		log.Print("Error adding build: " + err.Error())

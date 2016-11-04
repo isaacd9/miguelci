@@ -1,4 +1,4 @@
-package buildModel
+package projectModel
 
 import (
 	"gopkg.in/mgo.v2/bson"
@@ -7,11 +7,11 @@ import (
 type BuildState string
 
 const (
-	Created  BuildState = "CREATED"
-	Waiting             = "WAITING"
-	Started             = "STARTED"
-	Finished            = "FINISHED"
-	Failed              = "FAILED"
+	BuildCreated  BuildState = "CREATED"
+	BuildWaiting             = "WAITING"
+	BuildStarted             = "STARTED"
+	BuildFinished            = "FINISHED"
+	BuildFailed              = "FAILED"
 )
 
 type (
