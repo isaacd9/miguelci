@@ -23,7 +23,8 @@ func main() {
 	app.Delete("/v1/projects/:id", routes.RemoveProject)
 	app.Get("/v1/projects/:id", routes.GetProjectInfo)
 
-	app.Get("/v1/projects/:id/builds", routes.ListBuilds)
+	app.Get("/v1/projects/:id/build", routes.ListBuilds)
+	app.Post("/v1/projects/:id/build", routes.StartBuild)
 
 	app.Listen(":8080")
 }

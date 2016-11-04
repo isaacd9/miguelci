@@ -21,3 +21,17 @@ func ListBuilds(ctx *iris.Context) {
 
 	ctx.JSON(iris.StatusOK, buildList)
 }
+
+func StartBuild(ctx *iris.Context) {
+	id := ctx.Param("id")
+	err := project.StartBuild(id)
+
+	if err != nil {
+		log.Print("Error adding build: " + err.Error())
+		ctx.JSON(500, errorModel.Error{
+			Message: err.Error(),
+		})
+	}
+
+	ctx.Data(iris.StatusCreated, nil)
+}

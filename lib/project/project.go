@@ -76,3 +76,25 @@ func FindProject(id string) (pp *projectModel.Project, err error) {
 
 	return pp, nil
 }
+
+func StartBuild(id string) (err error) {
+	selector := bson.M{"_id": bson.ObjectIdHex(id)}
+	c := database.Manager.Database.C("projects")
+	p := projectModel.Project{}
+	err = c.Find(selector).One(&p)
+
+	if err != nil {
+		return err
+	}
+
+	buildNum := len(p.Builds) + 1
+	newBuild := buildModel.Build{ID: bson.NewObjectId(), Number: buildNum, State: buildModel.Created}
+	p.Builds = append(p.Builds, newBuild)
+
+	err = c.Update(selector, &p)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
