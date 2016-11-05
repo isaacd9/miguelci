@@ -2,6 +2,7 @@ package project
 
 import (
 	"errors"
+	"time"
 
 	"github.com/isaacd9/miguel/lib/database"
 	"github.com/isaacd9/miguel/model/project"
@@ -33,6 +34,9 @@ func New(p *projectModel.Project) (err error) {
 	if p.URL == "" {
 		return errors.New("Project URL is not set")
 	}
+
+	p.CreatedTime = time.Now()
+	p.UpdatedTime = time.Now()
 
 	err = c.Insert(p)
 	if err != nil {

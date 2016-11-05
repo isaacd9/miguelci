@@ -36,6 +36,7 @@ func createBuild(id string) (build *projectModel.Build, err error) {
 	buildNum := len(p.Builds) + 1
 	newBuild := projectModel.Build{ID: bson.NewObjectId(), Number: buildNum, State: projectModel.BuildCreated, CreatedTime: time.Now(), UpdatedTime: time.Now()}
 	p.Builds = append(p.Builds, newBuild)
+	p.UpdatedTime = time.Now()
 
 	err = c.Update(selector, &p)
 	if err != nil {
@@ -47,10 +48,6 @@ func createBuild(id string) (build *projectModel.Build, err error) {
 
 func queueBuild(build *projectModel.Build) (err error) {
 	log.Print("Queueing Build")
-	//	buildSelector := bson.M{"builds": bson.M{"$slice": -1}}
-	//
-	//	err = c.Find(projectSelector).Select(buildSelector).One(&p)
-	//	b := p.Builds[0]
 
 	if build.State != projectModel.BuildCreated {
 		return
@@ -66,7 +63,6 @@ func queueBuild(build *projectModel.Build) (err error) {
 	}
 
 	c := database.Manager.Database.C("projects")
-	//p := projectModel.Project{}
 
 	projectSelector := bson.M{"builds._id": build.ID}
 	err = c.Update(projectSelector, bson.M{"$set": bson.M{"builds.$.state": projectModel.BuildWaiting}})
