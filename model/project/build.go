@@ -2,6 +2,7 @@ package projectModel
 
 import (
 	"gopkg.in/mgo.v2/bson"
+	"time"
 )
 
 type BuildState string
@@ -16,8 +17,10 @@ const (
 
 type (
 	Build struct {
-		ID     bson.ObjectId `bson:"_id,omitempty"`
-		Number int           `bson:"Number"`
-		State  BuildState    `bson:"state"`
+		ID          bson.ObjectId `bson:"_id,omitempty"`
+		Number      int           `bson:"Number"`
+		State       BuildState    `bson:"state"`
+		CreatedTime time.Time
+		UpdatedTime time.Time
 	}
 )

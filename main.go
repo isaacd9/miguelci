@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/iris-contrib/middleware/logger"
 	"github.com/isaacd9/miguel/lib/database"
+	"github.com/isaacd9/miguel/lib/queue"
 	"github.com/isaacd9/miguel/routes"
 	"github.com/kataras/iris"
 )
@@ -15,6 +16,7 @@ func main() {
 	app := iris.New()
 	app.Use(logger.New())
 	database.Connect()
+	queue.Connect()
 
 	app.Get("/", hi)
 	app.Get("/v1/projects", routes.ListProjects)
