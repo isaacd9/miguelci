@@ -46,6 +46,20 @@ func createBuild(id string) (build *projectModel.Build, err error) {
 	return &newBuild, nil
 }
 
+func setBuildState(buildId bson.ObjectId, newState projectModel.BuildState) (err error) {
+	c := database.Manager.Database.C("projects")
+	projectSelector := bson.M{"builds._id": buildId}
+	err = c.Update(projectSelector,
+		bson.M{"$set": bson.M{"builds.$.state": newState}})
+
+	if err != nil {
+		log.Print(err)
+		return err
+	}
+
+	return nil
+}
+
 func queueBuild(build *projectModel.Build) (err error) {
 	log.Print("Queueing Build")
 
@@ -62,10 +76,7 @@ func queueBuild(build *projectModel.Build) (err error) {
 		return err
 	}
 
-	c := database.Manager.Database.C("projects")
-
-	projectSelector := bson.M{"builds._id": build.ID}
-	err = c.Update(projectSelector, bson.M{"$set": bson.M{"builds.$.state": projectModel.BuildWaiting}})
+	err = setBuildState(build.ID, projectModel.BuildWaiting)
 	if err != nil {
 		log.Print(err)
 		return err
@@ -84,4 +95,16 @@ func NewBuild(projectId string) (err error) {
 	go queueBuild(newBuild)
 
 	return nil
+}
+
+func GetProjectFromBuild(build *projectModel.Build) (pp *projectModel.Project, err error) {
+	c := database.Manager.Database.C("projects")
+	p := projectModel.Project{}
+	selector := bson.M{"builds._id": build.ID}
+
+	err = c.Find(selector).One(&p)
+	if err != nil {
+		return nil, err
+	}
+	return &p, err
 }
